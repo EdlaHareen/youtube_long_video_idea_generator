@@ -1,6 +1,10 @@
 import VideoCard from './VideoCard';
 
 export default function ResultsGrid({ results }) {
+  console.log('ResultsGrid received:', results);
+  console.log('Results length:', results?.length);
+  console.log('First result:', results?.[0]);
+
   if (!results || results.length === 0) {
     return (
       <div className="empty-state">
@@ -12,9 +16,12 @@ export default function ResultsGrid({ results }) {
 
   return (
     <div className="results-grid">
-      {results.map((video) => (
-        <VideoCard key={video.id} video={video} />
-      ))}
+      {results.map((video, index) => {
+        // Ensure video has an id for the key
+        const videoId = video.id || video.videoId || `video-${index}`;
+        console.log(`Rendering video ${index}:`, videoId, video);
+        return <VideoCard key={videoId} video={video} />;
+      })}
     </div>
   );
 }

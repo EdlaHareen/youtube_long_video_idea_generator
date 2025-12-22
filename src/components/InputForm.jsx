@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
 
 export default function InputForm({ onSubmit, isLoading }) {
   const [keyword, setKeyword] = useState('');
@@ -26,8 +28,19 @@ export default function InputForm({ onSubmit, isLoading }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="input-form">
-      <div className="form-group">
+    <motion.form 
+      onSubmit={handleSubmit} 
+      className="input-form"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <motion.div 
+        className="form-group"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.1 }}
+      >
         <label htmlFor="keyword">
           Keyword or Topic <span className="required">*</span>
         </label>
@@ -42,10 +55,23 @@ export default function InputForm({ onSubmit, isLoading }) {
           aria-required="true"
           aria-invalid={errors.keyword ? 'true' : 'false'}
         />
-        {errors.keyword && <span className="error-message">{errors.keyword}</span>}
-      </div>
+        {errors.keyword && (
+          <motion.span 
+            className="error-message"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            {errors.keyword}
+          </motion.span>
+        )}
+      </motion.div>
 
-      <div className="form-group">
+      <motion.div 
+        className="form-group"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.2 }}
+      >
         <label htmlFor="channelBrief">
           Channel Brief <span className="required">*</span>
         </label>
@@ -63,16 +89,33 @@ export default function InputForm({ onSubmit, isLoading }) {
         <span className="helper-text">
           Tell us about your channel's style and audience to get personalized video ideas
         </span>
-        {errors.channelBrief && <span className="error-message">{errors.channelBrief}</span>}
-      </div>
+        {errors.channelBrief && (
+          <motion.span 
+            className="error-message"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            {errors.channelBrief}
+          </motion.span>
+        )}
+      </motion.div>
 
-      <button
+      <motion.button
         type="submit"
         className="submit-button"
         disabled={isLoading}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
       >
-        {isLoading ? 'Analyzing...' : '🚀 Generate Ideas'}
-      </button>
-    </form>
+        {isLoading ? 'Analyzing...' : (
+          <>
+            Generate Ideas <ArrowRight size={18} />
+          </>
+        )}
+      </motion.button>
+    </motion.form>
   );
 }
