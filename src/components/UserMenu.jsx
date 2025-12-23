@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Heart, Settings, LogOut } from 'lucide-react';
+import { User, Heart, Settings, LogOut, Shield } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
-export default function UserMenu({ onFavoritesClick, onSettingsClick }) {
-  const { user, isAuthenticated, signOut } = useAuth();
+export default function UserMenu({ onFavoritesClick, onSettingsClick, onAdminClick }) {
+  const { user, isAuthenticated, isAdmin, signOut } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -39,6 +39,13 @@ export default function UserMenu({ onFavoritesClick, onSettingsClick }) {
     setIsOpen(false);
     if (onSettingsClick) {
       onSettingsClick();
+    }
+  };
+
+  const handleAdmin = () => {
+    setIsOpen(false);
+    if (onAdminClick) {
+      onAdminClick();
     }
   };
 
@@ -88,6 +95,19 @@ export default function UserMenu({ onFavoritesClick, onSettingsClick }) {
                 <Settings className="w-5 h-5" />
                 <span>Settings</span>
               </button>
+
+              {isAdmin && (
+                <>
+                  <div className="border-t border-white/10 my-1" />
+                  <button
+                    onClick={handleAdmin}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-left text-purple-400 hover:bg-purple-500/10 hover:text-purple-300 transition-colors"
+                  >
+                    <Shield className="w-5 h-5" />
+                    <span>Admin Dashboard</span>
+                  </button>
+                </>
+              )}
 
               <div className="border-t border-white/10 my-1" />
 

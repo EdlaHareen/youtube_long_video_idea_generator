@@ -1,9 +1,11 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
+import { isAdmin } from '../utils/admin';
 
 const AuthContext = createContext({
   user: null,
   isAuthenticated: false,
+  isAdmin: false,
   loading: true,
   signIn: async () => {},
   signUp: async () => {},
@@ -164,6 +166,7 @@ export function AuthProvider({ children }) {
   const value = {
     user,
     isAuthenticated: !!user,
+    isAdmin: isAdmin(user),
     loading,
     signIn,
     signUp,

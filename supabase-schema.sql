@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
   name TEXT,
   avatar_url TEXT,
   bio TEXT,
+  is_admin BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -35,6 +36,34 @@ CREATE POLICY "Users can update own profile"
 CREATE POLICY "Users can delete own profile"
   ON users FOR DELETE
   USING (auth.uid() = id);
+
+-- Admin RLS Policies (admins can view all users)
+CREATE POLICY "Admins can view all users"
+  ON users FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.users
+      WHERE id = auth.uid() AND is_admin = TRUE
+    )
+  );
+
+CREATE POLICY "Admins can update all users"
+  ON users FOR UPDATE
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.users
+      WHERE id = auth.uid() AND is_admin = TRUE
+    )
+  );
+
+CREATE POLICY "Admins can delete all users"
+  ON users FOR DELETE
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.users
+      WHERE id = auth.uid() AND is_admin = TRUE
+    )
+  );
 
 -- Function to automatically create user profile when user signs up
 CREATE OR REPLACE FUNCTION public.handle_new_user()
@@ -111,6 +140,16 @@ CREATE POLICY "Users can update their own preferences"
   ON user_preferences FOR UPDATE
   USING (auth.uid() = user_id);
 
+-- Admin RLS Policies for user_preferences
+CREATE POLICY "Admins can view all preferences"
+  ON user_preferences FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.users
+      WHERE id = auth.uid() AND is_admin = TRUE
+    )
+  );
+
 -- RLS Policies for search_history
 CREATE POLICY "Users can view their own search history"
   ON search_history FOR SELECT
@@ -124,6 +163,25 @@ CREATE POLICY "Users can delete their own search history"
   ON search_history FOR DELETE
   USING (auth.uid() = user_id);
 
+-- Admin RLS Policies for search_history
+CREATE POLICY "Admins can view all search history"
+  ON search_history FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.users
+      WHERE id = auth.uid() AND is_admin = TRUE
+    )
+  );
+
+CREATE POLICY "Admins can delete all search history"
+  ON search_history FOR DELETE
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.users
+      WHERE id = auth.uid() AND is_admin = TRUE
+    )
+  );
+
 -- RLS Policies for favorites
 CREATE POLICY "Users can view their own favorites"
   ON favorites FOR SELECT
@@ -136,6 +194,25 @@ CREATE POLICY "Users can insert their own favorites"
 CREATE POLICY "Users can delete their own favorites"
   ON favorites FOR DELETE
   USING (auth.uid() = user_id);
+
+-- Admin RLS Policies for favorites
+CREATE POLICY "Admins can view all favorites"
+  ON favorites FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.users
+      WHERE id = auth.uid() AND is_admin = TRUE
+    )
+  );
+
+CREATE POLICY "Admins can delete all favorites"
+  ON favorites FOR DELETE
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.users
+      WHERE id = auth.uid() AND is_admin = TRUE
+    )
+  );
 
 -- Function to update updated_at timestamp
 CREATE OR REPLACE FUNCTION update_updated_at_column()

@@ -13,7 +13,7 @@ import AuthModal from './AuthModal';
 import UserMenu from './UserMenu';
 import { useAuth } from '../contexts/AuthContext';
 
-export default function LandingPage({ onGetStarted, onFavoritesClick, onSettingsClick }) {
+export default function LandingPage({ onGetStarted, onFavoritesClick, onSettingsClick, onAdminClick }) {
   const [isHovering, setIsHovering] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { isAuthenticated } = useAuth();
@@ -119,6 +119,7 @@ export default function LandingPage({ onGetStarted, onFavoritesClick, onSettings
               <UserMenu 
                 onFavoritesClick={onFavoritesClick}
                 onSettingsClick={onSettingsClick}
+                onAdminClick={onAdminClick}
               />
             ) : (
               <motion.button 

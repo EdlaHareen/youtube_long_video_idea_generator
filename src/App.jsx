@@ -9,12 +9,18 @@ import ResultsGrid from './components/ResultsGrid';
 import UserMenu from './components/UserMenu';
 import FavoritesPage from './components/FavoritesPage';
 import SettingsPage from './components/SettingsPage';
+import AdminLayout from './components/admin/AdminLayout';
+import AdminDashboard from './components/admin/AdminDashboard';
+import AdminUsers from './components/admin/AdminUsers';
+import AdminAnalytics from './components/admin/AdminAnalytics';
+import AdminSearchHistory from './components/admin/AdminSearchHistory';
+import AdminFavorites from './components/admin/AdminFavorites';
 import { fetchVideoIdeas } from './utils/api';
 import { useAuth } from './contexts/AuthContext';
 import { saveSearchHistory, getUserPreferences, saveUserPreferences } from './utils/userData';
 
 function App() {
-  const { user, isAuthenticated, loading: authLoading } = useAuth();
+  const { user, isAuthenticated, isAdmin, loading: authLoading } = useAuth();
   const [showLanding, setShowLanding] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState(null);
@@ -24,6 +30,8 @@ function App() {
   const [lastSearch, setLastSearch] = useState(null);
   const [showFavorites, setShowFavorites] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showAdmin, setShowAdmin] = useState(false);
+  const [adminTab, setAdminTab] = useState('dashboard');
   const [navigationHistory, setNavigationHistory] = useState(['landing']);
   const resultsRef = useRef(null);
 
@@ -160,12 +168,21 @@ function App() {
         setResults(null);
         setError(null);
         break;
+      case 'admin':
+        setShowAdmin(true);
+        setShowFavorites(false);
+        setShowSettings(false);
+        setResults(null);
+        setError(null);
+        setShowLanding(false);
+        break;
       default:
         setShowLanding(true);
         setResults(null);
         setError(null);
         setShowFavorites(false);
         setShowSettings(false);
+        setShowAdmin(false);
     }
     
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -246,6 +263,31 @@ function App() {
     return filtered;
   }, [results, currentFilter, currentSort]);
 
+  // Show admin dashboard if admin and showAdmin is true
+  if (showAdmin && isAdmin) {
+    return (
+      <AdminLayout 
+        activeTab={adminTab} 
+        onTabChange={setAdminTab}
+        onBack={() => {
+          navigateTo('landing');
+          setShowAdmin(false);
+          setShowLanding(true);
+          setShowFavorites(false);
+          setShowSettings(false);
+          setResults(null);
+          setError(null);
+        }}
+      >
+        {adminTab === 'dashboard' && <AdminDashboard />}
+        {adminTab === 'users' && <AdminUsers />}
+        {adminTab === 'analytics' && <AdminAnalytics />}
+        {adminTab === 'search-history' && <AdminSearchHistory />}
+        {adminTab === 'favorites' && <AdminFavorites />}
+      </AdminLayout>
+    );
+  }
+
   // Show landing page immediately, don't wait for auth
   if (showLanding) {
     return (
@@ -263,6 +305,15 @@ function App() {
           navigateTo('settings');
           setShowSettings(true);
           setShowFavorites(false);
+          setResults(null);
+          setError(null);
+          setShowLanding(false);
+        }}
+        onAdminClick={() => {
+          navigateTo('admin');
+          setShowAdmin(true);
+          setShowFavorites(false);
+          setShowSettings(false);
           setResults(null);
           setError(null);
           setShowLanding(false);
@@ -353,6 +404,15 @@ function App() {
                 setShowFavorites(false);
                 setResults(null);
                 setError(null);
+              }}
+              onAdminClick={() => {
+                navigateTo('admin');
+                setShowAdmin(true);
+                setShowFavorites(false);
+                setShowSettings(false);
+                setResults(null);
+                setError(null);
+                setShowLanding(false);
               }}
             />
           </div>

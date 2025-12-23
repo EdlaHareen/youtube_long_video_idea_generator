@@ -20,3 +20,4 @@ SELECT COUNT(*) as user_count FROM users;
 -- Check auth.users to see if any users exist
 SELECT COUNT(*) as auth_user_count FROM auth.users;
 
+

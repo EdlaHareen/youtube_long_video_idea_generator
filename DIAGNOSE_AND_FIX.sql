@@ -97,3 +97,4 @@ ON CONFLICT (id) DO NOTHING;
 SELECT COUNT(*) as total_profiles FROM public.users;
 SELECT id, email, name FROM public.users;
 
+

@@ -22,3 +22,4 @@ SELECT id, email, created_at FROM auth.users;
 -- View all profiles in public.users
 SELECT id, email, name, created_at FROM public.users;
 
+
