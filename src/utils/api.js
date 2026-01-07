@@ -1,4 +1,4 @@
-const API_URL = 'https://n8n.srv1162636.hstgr.cloud/webhook-test/96826df0-6cdc-42b4-bd81-cb0e3f0eff45';
+const API_URL = 'https://n8n.srv1162636.hstgr.cloud/webhook/96826df0-6cdc-42b4-bd81-cb0e3f0eff45';
 const TIMEOUT_MS = 900000; // 15 minutes (900,000 milliseconds)
 
 export async function fetchVideoIdeas(keyword, channelBrief) {
